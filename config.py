@@ -43,3 +43,14 @@ SQLALCHEMY_DATABASE_URI = \
 # panel. If self-hosting on compute engine, replace the values below.
 MONGO_URI = \
     'mongodb://user:password@host:27017/database'
+
+node_name = "node-not-set"
+KIND = 'Book'
+PROBE_REQUEST_TYPE=0
+PROBE_REQUEST_SUBTYPE=4
+interface_to_channel = {
+    'wlan0': '1',
+    'wlan1': '6',
+    'wlan2': '11',
+    'wlan3': '14'
+}

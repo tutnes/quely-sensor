@@ -11,14 +11,8 @@ import requests
 import json
 import config
 from os import system
-from gcloud import datastore
+from visitors.model_datastore import *
 
-# configuration
-#evil_endpoint = "http://relay-dev.westeurope.cloudapp.azure.com:8888/track"
-#evil_endpoint = "http://127.0.0.1:8888"
-PROJECT_ID = 'practical-brace-126614'
-node_name = "node-not-set"
-KIND = 'Book'
 PROBE_REQUEST_TYPE=0
 PROBE_REQUEST_SUBTYPE=4
 interface_to_channel = {
@@ -137,44 +131,3 @@ def set_node_name():
     f.close()
     if len(lines) > 0:
         node_name = lines[0].strip()
-
-def get_client():
-#   Need to keep config in config.py do this later
-    return datastore.Client('practical-brace-126614')
-
-def update(data, id=None):
-    ds = get_client()
-    if id:
-        key = ds.key(KIND, int(id))
-    else:
-        key = ds.key(KIND)
-
-    entity = datastore.Entity(
-        key=key,
-        exclude_from_indexes=['description'])
-
-    entity.update(data)
-    ds.put(entity)
-#    return entity
-            
-
-def main():
-    global node_name
-    if len(sys.argv) < 2:
-        print "Please specify evil network interface"
-        sys.exit(1)
-    if len(sys.argv) >= 3:
-        node_name = sys.argv[2]
-    evil_interface = sys.argv[1]
-
-    print "[%s] EvilCorp starting sensor" % datetime.now()
-    setup_interface(evil_interface)
-    set_node_name()
-    #patch_send() # useful for debugging
-    sniff(iface=evil_interface, prn=PacketHandler, store=0)
-    
-if __name__=="__main__":
-    main()
-
-#book = {'title': u'EVIL', 'author': u'Utnes', 'publishedDate': u'11', 'balle': u'Heisann sveisanafdasdfasdfasdfasdfn'}
-#update(book)

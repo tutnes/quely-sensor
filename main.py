@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # Copyright 2015 Google Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,15 +12,38 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import bookshelf
+#import visitors
+from visitors.evil_sensor import *
 import config
+from scapy.all import *
+from scapy.fields import ConditionalField
+import struct
+from datetime import datetime
+import pprint
+import requests
+import json
+import config
+from os import system
+#from visitors import setup_interface
 
 
-app = bookshelf.create_app(config)
+def main():
+    global node_name
+    if len(sys.argv) < 2:
+        print "Please specify evil network interface"
+        sys.exit(1)
+    if len(sys.argv) >= 3:
+        node_name = sys.argv[2]
+    evil_interface = sys.argv[1]
+
+    print "[%s] Quely starting sensor" % datetime.now()
+    setup_interface(evil_interface)
+    set_node_name()
+    
+    #patch_send() # useful for debugging
+    sniff(iface=evil_interface, prn=PacketHandler, store=0)
+    
+if __name__=="__main__":
+    main()
 
 
-# This is only used when running locally. When running live, gunicorn runs
-# the application.
-if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=8080, debug=True)
